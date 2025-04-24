@@ -25,18 +25,7 @@ app.add_middleware(
 )
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # ── startup ────────────────────────────────
-    async with engine.begin() as conn:
-        # create all tables (in dev; in prod use Alembic migrations)
-        await conn.run_sync(Base.metadata.create_all)
-    yield
-    # ── shutdown (optional)──────────────────────
-    # e.g. await some_cleanup()
-
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 # include your routers just like before
 app.include_router(auth.router)
