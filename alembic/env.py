@@ -15,8 +15,7 @@ config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# ── Import your models’ MetaData for 'autogenerate' ──
-from app.models import Base  # ← adjust to your real module path
+from app.models import Base
 
 target_metadata = Base.metadata
 

@@ -1,4 +1,3 @@
-# auth.py
 from datetime import datetime, timedelta
 import os
 from jose import JWTError, jwt

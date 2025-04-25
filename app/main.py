@@ -27,7 +27,6 @@ app.add_middleware(
 
 app = FastAPI()
 
-# include your routers just like before
 app.include_router(auth.router)
 
 
