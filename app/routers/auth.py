@@ -38,7 +38,7 @@ def login_for_access_token(
         )
     access_token = auth.create_access_token(
         data={"sub": user.email},
-        expires_delta=timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES),
+        expires_delta=timedelta(minutes=auth.ACCESS_EXPIRE),
     )
     return {"access_token": access_token}
 
