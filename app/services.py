@@ -1,9 +1,8 @@
-import asyncio
 import time
 import re
-from concurrent.futures import ThreadPoolExecutor
 from anthropic import Anthropic
 from app.config import get_claude_api_key
+
 
 # Synchronous function that calls the Claude API using the official Anthropic client
 def call_claude(question: str, transcript: str) -> dict:
@@ -30,10 +29,10 @@ def call_claude(question: str, transcript: str) -> dict:
     start_time = time.time()  # ⏳ Start time
 
     message = client.messages.create(
-        model="claude-3-5-haiku-20241022", 
+        model="claude-3-5-haiku-20241022",
         max_tokens=1024,
         temperature=0.3,  # Less randomness for consistent scoring
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
     )
 
     end_time = time.time()  # ⏳ End time
@@ -50,14 +49,18 @@ def call_claude(question: str, transcript: str) -> dict:
         "feedback": feedback_text,  # ✅ Clean feedback without scores
     }
 
+
 # Async function that wraps the blocking Claude call inside a thread executor
 async def get_claude_feedback(question: str, transcript: str) -> dict:
     loop = asyncio.get_running_loop()
     with ThreadPoolExecutor() as pool:
         return await loop.run_in_executor(pool, call_claude, question, transcript)
 
+
 def extract_scores(response_text: str) -> tuple:
-    score_pattern = re.compile(r"Clarity:\s*(\d+)/10|Structure:\s*(\d+)/10|Communication Style:\s*(\d+)/10")
+    score_pattern = re.compile(
+        r"Clarity:\s*(\d+)/10|Structure:\s*(\d+)/10|Communication Style:\s*(\d+)/10"
+    )
     matches = score_pattern.findall(response_text)
 
     scores = {

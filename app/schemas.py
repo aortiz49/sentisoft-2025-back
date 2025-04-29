@@ -9,7 +9,9 @@ class UserCreate(BaseModel):
 class UserRead(BaseModel):
     id: int
     email: EmailStr
-    is_active: bool
+    b2c: bool
+    interview_count: int
+    linkedin_url: str | None
 
     class Config:
         orm_mode = True
