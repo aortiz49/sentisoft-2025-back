@@ -12,10 +12,6 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-<<<<<<< Updated upstream
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-=======
     b2c = Column(Boolean, nullable=False, default=False)
     interview_count = Column(Integer, nullable=False, default=0)
     linkedin_url = Column(String, nullable=True)
@@ -26,35 +22,44 @@ class User(Base):
     communication_level = Column(
         Integer, ForeignKey("competency_levels.id"), nullable=False
     )
+    interviews = relationship("Interviews", back_populates="user", cascade="all, delete-orphan")
+    scorecodes = relationship("ScoreCode", secondary="user_scorecode", back_populates="users")
 
 
-class Interviews(BaseEntity):
+class Interviews(Base):
     __tablename__ = "interviews"
+    id = Column(Integer, primary_key=True, index=True)
     completed_at = Column(DateTime(timezone=True), nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship("User", back_populates="interviews")
+    questions = relationship("Question", secondary="interview_questions", back_populates="interviews")
+    interview_feedback = relationship("InterviewFeedback", back_populates="interview", cascade="all, delete-orphan")
+    scorecodes = relationship("ScoreCode", secondary="interview_scorecodes", back_populates="interviews")
 
-
-class QuestionCategory(BaseEntity):
+class QuestionCategory(Base):
     __tablename__ = "question_categories"
+    id = Column(Integer, primary_key=True, index=True)
     category = Column(String, nullable=False)
     description = Column(String, nullable=True)
 
 
-class Question(BaseEntity):
+class Question(Base):
     __tablename__ = "questions"
+    id = Column(Integer, primary_key=True, index=True)
     text = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey("question_categories.id"), nullable=False)
     category = relationship("QuestionCategory", back_populates="questions")
-
-
-class InterviewQuestion(BaseEntity):
+    interviews = relationship("Interviews", secondary="interview_questions", back_populates="questions")
+    
+class InterviewQuestion(Base):
     __tablename__ = "interview_questions"
+    id = Column(Integer, primary_key=True, index=True)
     question_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
     interview_id = Column(Integer, ForeignKey("interviews.id"), nullable=False)
 
-
-class InterviewFeedback(BaseEntity):
+class InterviewFeedback(Base):
     __tablename__ = "interview_feedback"
+    id = Column(Integer, primary_key=True, index=True)
     feedback = Column(String, nullable=False)
     general_score = Column(Double, nullable=False)
     recommendations = Column(String, nullable=False)
@@ -66,26 +71,48 @@ class InterviewFeedback(BaseEntity):
     communication_level = Column(
         Integer, ForeignKey("competency_levels.id"), nullable=False
     )
-
-
-class CompetencyLevel(BaseEntity):
+    interview = relationship("Interviews", back_populates="interview_feedback")
+    mistake_categories = relationship("MistakeCategory", secondary="interview_mistakes", back_populates="interview_feedbacks")
+    
+class CompetencyLevel(Base):
     __tablename__ = "competency_levels"
+    id = Column(Integer, primary_key=True, index=True)
     competency = Column(String, nullable=False)
     description = Column(String, nullable=False)
     level = Column(String, nullable=False)
 
 
-class MistakeCategory(BaseEntity):
+class MistakeCategory(Base):
     __tablename__ = "mistake_categories"
+    id = Column(Integer, primary_key=True, index=True)
     category = Column(String, nullable=False)
     description = Column(String, nullable=True)
 
 
-class InterviewMistake(BaseEntity):
+class InterviewMistake(Base):
     __tablename__ = "interview_mistakes"
+    id = Column(Integer, primary_key=True, index=True)
     category_id = Column(Integer, ForeignKey("mistake_categories.id"), nullable=False)
     interview_id = Column(Integer, ForeignKey("interviews.id"), nullable=False)
->>>>>>> Stashed changes
+
+class ScoreCode(Base):
+    __tablename__ = "score_codes"
+    id = Column(Integer, primary_key=True, index=True)
+    competency = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    level = Column(String, nullable=False)
+    users = relationship("User", secondary="user_scorecode", back_populates="scorecodes")
+    interviews = relationship("Interviews", secondary="interview_scorecodes", back_populates="scorecodes")
+
+class UserScoreCode(Base):
+    __tablename__ = "user_scorecode"
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    score_code_id = Column(Integer, ForeignKey("score_codes.id"), primary_key=True)
+
+class InterviewScoreCode(Base):
+    __tablename__ = "interview_scorecodes"
+    interview_id = Column(Integer, ForeignKey("interviews.id"), primary_key=True)
+    score_code_id = Column(Integer, ForeignKey("score_codes.id"), primary_key=True)
 
 
 class AnalysisRequest(BaseModel):
