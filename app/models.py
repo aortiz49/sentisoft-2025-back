@@ -21,12 +21,10 @@ class User(BaseEntity):
     b2c = Column(Boolean, nullable=False, default=False)
     interview_count = Column(Integer, nullable=False, default=0)
     linkedin_url = Column(String, nullable=True)
-    clarity_level = Column(Integer, ForeignKey("competency_levels.id"), nullable=False)
-    structure_level = Column(
-        Integer, ForeignKey("competency_levels.id"), nullable=False
-    )
+    clarity_level = Column(Integer, ForeignKey("competency_levels.id"), nullable=True)
+    structure_level = Column(Integer, ForeignKey("competency_levels.id"), nullable=True)
     communication_level = Column(
-        Integer, ForeignKey("competency_levels.id"), nullable=False
+        Integer, ForeignKey("competency_levels.id"), nullable=True
     )
     interviews = relationship(
         "Interviews", back_populates="user", cascade="all, delete-orphan"

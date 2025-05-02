@@ -9,7 +9,8 @@ class UserCreate(BaseModel):
 class UserRead(BaseModel):
     id: int
     email: EmailStr
-    is_active: bool
+    b2c: bool
+    interview_count: int
 
     class Config:
         orm_mode = True
