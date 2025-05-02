@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from fastapi import Depends
 import os
 from ..database import get_db
 from ..schemas import UserCreate, UserRead, Token
@@ -52,6 +53,8 @@ def login_for_access_token(
     return {"access_token": access_token}
 
 
-@router.get("/me", response_model=UserRead)
-def read_users_me(current_user: User = Depends(get_current_user)):
+@router.get("/profile")
+def get_profile(current_user: User = Depends(get_current_user)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     return current_user

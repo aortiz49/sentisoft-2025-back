@@ -60,6 +60,6 @@ def get_current_user(
         raise creds_exc
 
     user = get_user_by_email(db, email)
-    if not user or not user.is_active:
+    if not user:
         raise creds_exc
     return user
