@@ -85,3 +85,4 @@ class InterviewMistake(Base):
 class AnalysisRequest(BaseModel):
     question: str
     transcript: str
+
