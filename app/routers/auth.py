@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import timedelta
-
+import os
 from ..database import get_db
 from ..schemas import UserCreate, UserRead, Token
 from ..models import User
@@ -14,6 +14,8 @@ from ..services.auth.auth_services import (
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+ACCESS_EXPIRE = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
 
 @router.post("/register", response_model=UserRead)
