@@ -6,7 +6,7 @@ from app.database import engine
 from app.models import Base
 from app.routers.auth import router
 from app.routers.interview import router as interview_router
-from app.services.interview.claude_services import get_claude_feedback
+from app.services.interview.interview_services import get_claude_feedback
 import logging
 
 
