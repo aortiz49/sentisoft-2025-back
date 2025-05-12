@@ -3,16 +3,17 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 from fastapi import Depends
 import os
-from ..database import get_db
-from ..schemas import UserCreate, UserRead, Token
-from ..models import User
-from ..services.auth.auth_services import (
+from app.schemas import UserCreate, UserRead, Token
+from app.models import User
+from app.services.auth.auth_services import (
     get_password_hash,
     get_user_by_email,
     authenticate_user,
     create_access_token,
     get_current_user,
 )
+from sqlalchemy.sql.expression import func
+from app.database import get_db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.models import AnalysisRequest
 from app.database import engine
 from app.models import Base
-from app.routers import router
+from app.routers.auth import router
 from app.services.interview.claude_services import get_claude_feedback
 import logging
 
