@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+import sqlalchemy as sa
 
 Base = declarative_base()
 
@@ -46,6 +47,9 @@ class Interviews(BaseEntity):
 
 class CompetencyLevel(BaseEntity):
     __tablename__ = "competency_levels"
+    __table_args__ = (
+        sa.UniqueConstraint("competency", "level", name="uq_competency_level"),
+    )
     competency = Column(String, nullable=False)
     description = Column(String, nullable=False)
     level = Column(String, nullable=False)

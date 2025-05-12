@@ -12,18 +12,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize database tables
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Create database tables if they don't exist when the server starts"""
-    logger.info("Creating database tables if they don't exist...")
-    Base.metadata.create_all(bind=engine)
-    logger.info("Database tables created successfully")
 
 
 app.add_middleware(
@@ -33,7 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 app.include_router(router.router)
 
