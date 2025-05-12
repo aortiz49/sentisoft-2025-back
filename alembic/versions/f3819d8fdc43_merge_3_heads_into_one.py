@@ -1,11 +1,10 @@
-"""populate interview questions
+"""Merge 3 heads into one
 
-Revision ID: 3f2f7d19e870
-Revises: 6d8c6d5d59ab
-Create Date: 2025-05-11 23:04:43.893768
+Revision ID: f3819d8fdc43
+Revises: 3f2f7d19e870, add_question_seed, cd3f1a68c898
+Create Date: 2025-05-12 13:58:55.573420
 
 """
-
 from typing import Sequence, Union
 
 from alembic import op
@@ -13,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "3f2f7d19e870"
-down_revision = None
+revision: str = 'f3819d8fdc43'
+down_revision: Union[str, None] = ('3f2f7d19e870', 'add_question_seed', 'cd3f1a68c898')
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
