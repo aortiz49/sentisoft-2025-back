@@ -5,6 +5,7 @@ from app.models import AnalysisRequest
 from app.database import engine
 from app.models import Base
 from app.routers.auth import router
+from app.routers.interview import router as interview_router
 from app.services.interview.claude_services import get_claude_feedback
 import logging
 
@@ -24,6 +25,7 @@ app.add_middleware(
 )
 
 app.include_router(router.router)
+app.include_router(interview_router.router)
 
 
 @app.get("/health")

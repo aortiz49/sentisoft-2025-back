@@ -12,7 +12,6 @@ from app.services.auth.auth_services import (
     create_access_token,
     get_current_user,
 )
-from sqlalchemy.sql.expression import func
 from app.database import get_db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
