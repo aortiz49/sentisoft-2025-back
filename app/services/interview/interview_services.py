@@ -13,26 +13,38 @@ def call_claude(question: str, transcript: str) -> dict:
     client = Anthropic(api_key=claude_api_key)
 
     prompt = f"""
-    You are a behavioral interview coach.
+        You are a behavioral interview coach.
 
-    Evaluate the following response to the interview question: "{question}"
+        Evaluate the following candidate response to the interview question:  
+        **"{question}"**
 
-    Candidate's response:
-    {transcript}
+        Candidate's response:
+        {transcript}
 
-    Please provide a score out of 10 of each of the three categories: clarity, structure, and communication style.
-    - Feedback on clarity, structure, and communication style.
-    - Whether the candidate stayed on topic.
-    - Suggested improvements.
+        Return your evaluation using this structured format:
 
-    Note: Don't be too harsh while grading but also be fair. The user needs to be able to improve over time!
+        Clarity: X/10  
+        Structure: X/10  
+        Communication: X/10  
+
+        - **Clarity**: [One concise sentence about how clear the response was]  
+        - **Structure**: [One sentence on how well the answer was organized]  
+        - **Communication**: [One sentence on tone, pacing, and engagement]  
+        - **Relevance**: [Did the candidate stay on topic?]  
+        - **Suggestions**: [One or two actionable tips for improvement]
+
+        **Instructions:**
+        - Be concise, encouraging, and constructive.
+        - Avoid full paragraphs—use bullets exactly as shown.
+        - Limit your full output to **200 words maximum**.
+        - Do not include introductions, summaries, or explanations outside the format.
     """
 
     start_time = time.time()  # ⏳ Start time
 
     message = client.messages.create(
         model="claude-3-5-haiku-20241022",
-        max_tokens=1024,
+        max_tokens=400,
         temperature=0.3,  # Less randomness for consistent scoring
         messages=[{"role": "user", "content": prompt}],
     )
@@ -61,7 +73,7 @@ async def get_claude_feedback(question: str, transcript: str) -> dict:
 
 def extract_scores(response_text: str) -> tuple:
     score_pattern = re.compile(
-        r"Clarity:\s*(\d+)/10|Structure:\s*(\d+)/10|Communication Style:\s*(\d+)/10"
+        r"Clarity:\s*(\d+)/10|Structure:\s*(\d+)/10|Communication:\s*(\d+)/10"
     )
     matches = score_pattern.findall(response_text)
 
