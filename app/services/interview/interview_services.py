@@ -30,13 +30,14 @@ def call_claude(question: str, transcript: str) -> dict:
         - **Clarity**: [One concise sentence about how clear the response was]  
         - **Structure**: [One sentence on how well the answer was organized]  
         - **Communication**: [One sentence on tone, pacing, and engagement]  
-        - **Relevance**: [Did the candidate stay on topic?]  
-        - **Suggestions**: [One or two actionable tips for improvement]
+        - **Relevance**: [Did the candidate stay on topic? If not, explain why.]    
+        - **Overall**: [A small paragraph that includes positive aspects of the response and some actionable tips for improvement if applicable]
 
         **Instructions:**
-        - Be concise, encouraging, and constructive.
-        - Avoid full paragraphs—use bullets exactly as shown.
-        - Limit your full output to **200 words maximum**.
+        - Be thorough, encouraging, and constructive.
+        - Avoid full paragraphs—use bullets exactly as shown but ensure the response is not mediocre.
+        - Ensure the response is not too long or too short.
+        - Limit your full output to **300 words maximum**.
         - Do not include introductions, summaries, or explanations outside the format.
     """
 
@@ -44,7 +45,7 @@ def call_claude(question: str, transcript: str) -> dict:
 
     message = client.messages.create(
         model="claude-3-5-haiku-20241022",
-        max_tokens=400,
+        max_tokens=512,
         temperature=0.3,  # Less randomness for consistent scoring
         messages=[{"role": "user", "content": prompt}],
     )
