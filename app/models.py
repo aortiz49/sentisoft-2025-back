@@ -80,7 +80,6 @@ class InterviewQuestion(BaseEntity):
     clarity_score = Column(Integer, nullable=True)
     structure_score = Column(Integer, nullable=True)
     communication_score = Column(Integer, nullable=True)
-    overall_score = Column(Integer, nullable=True)
     feedback = Column(String, nullable=True)
     answer = Column(String, nullable=True)
 

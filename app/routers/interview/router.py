@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 from datetime import datetime
+from typing import List
 
 from app.models import Interviews, Question, InterviewQuestion, User
 from app.schemas import QuestionSchema, InterviewAnswerUpdate
@@ -9,6 +10,43 @@ from app.services.auth.auth_services import get_current_user
 import sqlalchemy as sa
 
 router = APIRouter(prefix="/interview", tags=["interview"])
+
+
+@router.get("/{interview_id}/average-scores", response_model=dict)
+def get_average_scores(
+    interview_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    interview = (
+        db.query(Interviews)
+        .filter(Interviews.id == interview_id, Interviews.user_id == current_user.id)
+        .first()
+    )
+    if not interview:
+        raise HTTPException(
+            status_code=404, detail="Interview not found or unauthorized"
+        )
+
+    questions = db.query(InterviewQuestion).filter_by(interview_id=interview_id).all()
+
+    if not questions:
+        raise HTTPException(
+            status_code=404, detail="No questions found for this interview"
+        )
+
+    def avg(field: str) -> float:
+        values = [getattr(q, field) for q in questions if getattr(q, field) is not None]
+        if not values:
+            return 0.0
+        return round(sum(values) / len(values), 1)
+
+    return {
+        "interview_id": interview_id,
+        "clarity": avg("clarity_score"),
+        "structure": avg("structure_score"),
+        "communication": avg("communication_score"),
+    }
 
 
 @router.patch("/{interview_id}/question/{question_id}", response_model=dict)
