@@ -76,6 +76,8 @@ class InterviewQuestion(BaseEntity):
     __tablename__ = "interview_questions"
     question_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
     interview_id = Column(Integer, ForeignKey("interviews.id"), nullable=False)
+    answered_at = Column(DateTime(timezone=True), nullable=True)
+    answer = Column(String, nullable=True)
 
 
 class InterviewFeedback(BaseEntity):
