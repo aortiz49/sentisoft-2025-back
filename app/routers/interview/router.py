@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
-from typing import List
-import sqlalchemy as sa
 from datetime import datetime
 
 from app.models import Interviews, Question, InterviewQuestion, User
@@ -20,7 +18,6 @@ def update_interview_question_answer(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Optional: confirm interview belongs to current user
     interview = (
         db.query(Interviews)
         .filter(Interviews.id == interview_id, Interviews.user_id == current_user.id)
@@ -31,7 +28,6 @@ def update_interview_question_answer(
             status_code=404, detail="Interview not found or unauthorized"
         )
 
-    # Find the interview-question link
     iq = (
         db.query(InterviewQuestion)
         .filter_by(interview_id=interview_id, question_id=question_id)
@@ -42,16 +38,35 @@ def update_interview_question_answer(
             status_code=404, detail="Question not found in this interview"
         )
 
-    iq.answered_at = datetime.utcnow()
-    iq.answer = answer
+    # Only set answered_at the first time an answer is submitted
+    if answer and iq.answered_at is None:
+        iq.answered_at = datetime.utcnow()
+
+    # Update scores and feedback if provided
+    if "clarity" in answer:
+        iq.clarity_score = answer["clarity"]
+    if "structure" in answer:
+        iq.structure_score = answer["structure"]
+    if "communication" in answer:
+        iq.communication_score = answer["communication"]
+    if "overall" in answer:
+        iq.overall_score = answer["overall"]
+    if "feedback" in answer:
+        iq.feedback = answer["feedback"]
+
     db.commit()
     db.refresh(iq)
 
     return {
         "interview_id": interview_id,
         "question_id": question_id,
-        "answered_at": iq.answered_at.isoformat(),
-        "answer": iq.answer,
+        "answer": answer,
+        "answered_at": iq.answered_at.isoformat() if iq.answered_at else None,
+        "clarity_score": iq.clarity_score,
+        "structure_score": iq.structure_score,
+        "communication_score": iq.communication_score,
+        "overall_score": iq.overall_score,
+        "feedback": iq.feedback,
     }
 
 

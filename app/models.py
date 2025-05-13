@@ -77,7 +77,11 @@ class InterviewQuestion(BaseEntity):
     question_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
     interview_id = Column(Integer, ForeignKey("interviews.id"), nullable=False)
     answered_at = Column(DateTime(timezone=True), nullable=True)
-    answer = Column(String, nullable=True)
+    clarity_score = Column(Integer, nullable=True)
+    structure_score = Column(Integer, nullable=True)
+    communication_score = Column(Integer, nullable=True)
+    overall_score = Column(Integer, nullable=True)
+    feedback = Column(String, nullable=True)
 
 
 class InterviewFeedback(BaseEntity):

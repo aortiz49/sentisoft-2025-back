@@ -30,12 +30,11 @@ def call_claude(question: str, transcript: str) -> dict:
         - **Clarity**: [One concise sentence about how clear the response was]  
         - **Structure**: [One sentence on how well the answer was organized]  
         - **Communication**: [One sentence on tone, pacing, and engagement]  
-        - **Relevance**: [Did the candidate stay on topic? If not, explain why.]    
         - **Overall**: [A small paragraph that includes positive aspects of the response and some actionable tips for improvement if applicable]
 
         **Instructions:**
         - Be thorough, encouraging, and constructive.
-        - Avoid full paragraphs—use bullets exactly as shown but ensure the response is not mediocre.
+        - Only the "Overall" section should be in paragraph form.
         - Ensure the response is not too long or too short.
         - Limit your full output to **300 words maximum**.
         - Do not include introductions, summaries, or explanations outside the format.
