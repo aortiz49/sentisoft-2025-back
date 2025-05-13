@@ -82,6 +82,7 @@ class InterviewQuestion(BaseEntity):
     communication_score = Column(Integer, nullable=True)
     overall_score = Column(Integer, nullable=True)
     feedback = Column(String, nullable=True)
+    answer = Column(String, nullable=True)
 
 
 class InterviewFeedback(BaseEntity):

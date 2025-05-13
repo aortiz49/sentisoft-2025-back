@@ -38,3 +38,12 @@ class QuestionSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class InterviewAnswerUpdate(BaseModel):
+    answer: Optional[str] = None
+    clarity_score: Optional[int] = None
+    structure_score: Optional[int] = None
+    communication_score: Optional[int] = None
+    overall_score: Optional[int] = None
+    feedback: Optional[str] = None

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 
 from app.models import Interviews, Question, InterviewQuestion, User
-from app.schemas import QuestionSchema
+from app.schemas import QuestionSchema, InterviewAnswerUpdate
 from app.database import get_db
 from app.services.auth.auth_services import get_current_user
 import sqlalchemy as sa
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/interview", tags=["interview"])
 def update_interview_question_answer(
     interview_id: int,
     question_id: int,
-    answer: str = Body(..., embed=True),
+    update: InterviewAnswerUpdate = Body(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -39,21 +39,21 @@ def update_interview_question_answer(
             status_code=404, detail="Question not found in this interview"
         )
 
-    # Only set answered_at the first time an answer is submitted
-    if answer and iq.answered_at is None:
-        iq.answered_at = datetime.utcnow()
+    if update.answer:
+        iq.answer = update.answer
+        if iq.answered_at is None:
+            iq.answered_at = datetime.utcnow()
 
-    # Update scores and feedback if provided
-    if "clarity" in answer:
-        iq.clarity_score = answer["clarity"]
-    if "structure" in answer:
-        iq.structure_score = answer["structure"]
-    if "communication" in answer:
-        iq.communication_score = answer["communication"]
-    if "overall" in answer:
-        iq.overall_score = answer["overall"]
-    if "feedback" in answer:
-        iq.feedback = answer["feedback"]
+    if update.clarity_score is not None:
+        iq.clarity_score = update.clarity_score
+    if update.structure_score is not None:
+        iq.structure_score = update.structure_score
+    if update.communication_score is not None:
+        iq.communication_score = update.communication_score
+    if update.overall_score is not None:
+        iq.overall_score = update.overall_score
+    if update.feedback:
+        iq.feedback = update.feedback
 
     db.commit()
     db.refresh(iq)
@@ -61,7 +61,7 @@ def update_interview_question_answer(
     return {
         "interview_id": interview_id,
         "question_id": question_id,
-        "answer": answer,
+        "answer": iq.answer,
         "answered_at": iq.answered_at.isoformat() if iq.answered_at else None,
         "clarity_score": iq.clarity_score,
         "structure_score": iq.structure_score,
