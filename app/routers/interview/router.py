@@ -138,3 +138,48 @@ def generate_interview(
         "interview_id": str(interview.id),
         "questions": [QuestionSchema.from_orm(q) for q in questions],
     }
+
+
+@router.get("/my-results", response_model=List[dict])
+def list_user_interviews(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    interviews = (
+        db.query(Interviews)
+        .filter(Interviews.user_id == current_user.id)
+        .order_by(Interviews.created_at.desc())
+        .all()
+    )
+
+    results = []
+
+    for interview in interviews:
+        questions = (
+            db.query(InterviewQuestion)
+            .filter(InterviewQuestion.interview_id == interview.id)
+            .all()
+        )
+
+        if not questions:
+            continue
+
+        def avg(field):
+            vals = [
+                getattr(q, field) for q in questions if getattr(q, field) is not None
+            ]
+            return round(sum(vals) / len(vals), 1) if vals else None
+
+        results.append(
+            {
+                "interview_id": interview.id,
+                "created_at": (
+                    interview.created_at.isoformat() if interview.created_at else None
+                ),
+                "clarity": avg("clarity_score"),
+                "structure": avg("structure_score"),
+                "communication": avg("communication_score"),
+            }
+        )
+
+    return results
