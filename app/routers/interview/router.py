@@ -6,6 +6,7 @@ from app.models import Interviews, Question, InterviewQuestion, User
 from app.schemas import QuestionSchema
 from app.database import get_db
 from app.services.auth.auth_services import get_current_user
+import sqlalchemy as sa
 
 router = APIRouter(prefix="/interview", tags=["interview"])
 
