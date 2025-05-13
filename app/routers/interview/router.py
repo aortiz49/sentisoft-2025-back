@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List
 
 from app.models import Interviews, Question, InterviewQuestion, User
-from app.schemas import QuestionSchema, InterviewAnswerUpdate
+from app.schemas import QuestionSchema, InterviewAnswerUpdate, InterviewSummarySchema
 from app.database import get_db
 from app.services.auth.auth_services import get_current_user
 import sqlalchemy as sa
@@ -140,7 +140,7 @@ def generate_interview(
     }
 
 
-@router.get("/my-results", response_model=List[dict])
+@router.get("/my-results", response_model=List[InterviewSummarySchema])
 def list_user_interviews(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),

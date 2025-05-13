@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from datetime import datetime
 from typing import Optional
 
 
@@ -46,3 +47,14 @@ class InterviewAnswerUpdate(BaseModel):
     structure_score: Optional[int] = None
     communication_score: Optional[int] = None
     feedback: Optional[str] = None
+
+
+class InterviewSummarySchema(BaseModel):
+    interview_id: int
+    created_at: datetime
+    clarity: Optional[float]
+    structure: Optional[float]
+    communication: Optional[float]
+
+    class Config:
+        orm_mode = True
