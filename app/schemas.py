@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 
 class UserCreate(BaseModel):
@@ -13,7 +14,7 @@ class UserRead(BaseModel):
     interview_count: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Token(BaseModel):
@@ -24,10 +25,16 @@ class Token(BaseModel):
 class QuestionCategorySchema(BaseModel):
     id: int
     category: str
-    description: str
+    description: Optional[str] = None
+
+    class Config:
+        from_attributes = True
 
 
 class QuestionSchema(BaseModel):
     id: int
     text: str
     category: QuestionCategorySchema
+
+    class Config:
+        from_attributes = True

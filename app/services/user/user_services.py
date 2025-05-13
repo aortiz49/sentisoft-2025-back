@@ -14,24 +14,6 @@ def get_user_by_email(email: str, db: Session = None) -> Optional[User]:
     return db.query(User).filter(User.email == email).first()
 
 
-def get_current_user(token: str) -> Optional[User]:
-    """Get current user from JWT token"""
-    try:
-        # Decode the token to get the user's email
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email = payload.get("sub")
-
-        if not email:
-            return None
-
-        # Get the user from the database
-        db = get_db()
-        return get_user_by_email(email, db)
-
-    except JWTError:
-        return None
-
-
 def update_user_profile(user_id: int, **kwargs) -> Optional[User]:
     """Update user profile information"""
     db = get_db()
