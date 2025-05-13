@@ -43,6 +43,9 @@ class Interviews(BaseEntity):
     interview_feedback = relationship(
         "InterviewFeedback", back_populates="interview", cascade="all, delete-orphan"
     )
+    clarity_score = Column(Integer, nullable=True)
+    structure_score = Column(Integer, nullable=True)
+    communication_score = Column(Integer, nullable=True)
 
 
 class CompetencyLevel(BaseEntity):
