@@ -45,5 +45,4 @@ class InterviewAnswerUpdate(BaseModel):
     clarity_score: Optional[int] = None
     structure_score: Optional[int] = None
     communication_score: Optional[int] = None
-    overall_score: Optional[int] = None
     feedback: Optional[str] = None

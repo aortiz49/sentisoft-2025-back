@@ -88,8 +88,6 @@ def update_interview_question_answer(
         iq.structure_score = update.structure_score
     if update.communication_score is not None:
         iq.communication_score = update.communication_score
-    if update.overall_score is not None:
-        iq.overall_score = update.overall_score
     if update.feedback:
         iq.feedback = update.feedback
 
@@ -104,7 +102,6 @@ def update_interview_question_answer(
         "clarity_score": iq.clarity_score,
         "structure_score": iq.structure_score,
         "communication_score": iq.communication_score,
-        "overall_score": iq.overall_score,
         "feedback": iq.feedback,
     }
 
